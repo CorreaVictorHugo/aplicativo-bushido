@@ -1,0 +1,253 @@
+ARQUITETURA E TECNOLOGIAS DO PROJETO
+=====================================
+
+VISÃO GERAL DA ARQUITETURA
+--------------------------
+
+O projeto segue uma arquitetura **Full-Stack React/Next.js** com **Backend-as-a-Service (BaaS)** via Supabase.
+A separação de responsabilidades é:
+
+┌─────────────────────────────────────────────────────────────────┐
+│                      CLIENT (Browser)                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │  Next.js     │  │  React 19    │  │  TanStack Query      │  │
+│  │  App Router  │  │  Components  │  │  (Server State)      │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │  React Hook  │  │  Zod v4      │  │  Zustand             │  │
+│  │  Form        │  │  Validation  │  │  (Client State)      │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                        @supabase/ssr (cookies + session)
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      SERVER (Next.js)                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │  Server      │  │  Middleware  │  │  Server Components   │  │
+│  │  Components  │  │  (Auth Guard)│  │  (Data Fetching)     │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+│  ┌──────────────┐  ┌──────────────┐                            │
+│  │  Supabase    │  │  createServer│                            │
+│  │  Server      │  │  Client      │                            │
+│  │  Client      │  │  (cookies)   │                            │
+│  └──────────────┘  └──────────────┘                            │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                              Supabase Platform
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      SUPABASE (BaaS)                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │  PostgreSQL  │  │  Auth        │  │  Storage             │  │
+│  │  + RLS       │  │  (Email/Pass)│  │  (Files/Buckets)     │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+│  ┌──────────────┐  ┌──────────────┐                            │
+│  │  Realtime    │  │  Edge        │                            │
+│  │  (Subscribes)│  │  Functions   │                            │
+│  └──────────────┘  └──────────────┘                            │
+└─────────────────────────────────────────────────────────────────┘
+
+
+TECNOLOGIAS E SEUS PAPÉIS
+=========================
+
+┌──────────────────┬──────────────────────────────────────────────────────────┐
+│ TECNOLOGIA       │ PAPEL NO PROJETO                                         │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ Next.js 16.2.12  │ Framework React full-stack com App Router, Server        │
+│ (Turbopack)      │ Components, Server Actions, Middleware, ISR. Build       │
+│                  │ ultra-rápido com Turbopack.                              │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ React 19         │ Biblioteca UI com Concurrent Features, Server            │
+│                  │ Components, Actions, novo JSX Transform.                 │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ TypeScript 5.x   │ Tipagem estática em todo código (components, hooks,      │
+│                  │ lib, schemas, middleware). Strict mode ativo.            │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ Tailwind CSS v4  │ Utility-first CSS. Configuração via CSS (não JS).        │
+│                  │ Design system consistente, dark mode ready, JIT compiler.│
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ Supabase         │ Backend-as-a-Service completo:                           │
+│                  │ • PostgreSQL gerenciado com RLS (Row Level Security)     │
+│                  │ • Auth (email/senha, OAuth, MFA, magic links)            │
+│                  │ • Storage (buckets, CDN, transformação de imagens)       │
+│                  │ • Realtime (postgres_changes via WebSocket)              │
+│                  │ • Edge Functions (Deno, deploy global)                   │
+│                  │ • pg_vector, pg_cron, pg_graphql extensions              │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ @supabase/ssr    │ Integração oficial Next.js ↔ Supabase. Gerencia cookies  │
+│                  │ de sessão automaticamente no middleware, Server          │
+│                  │ Components e Client Components.                          │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ supabase-js v2   │ Cliente TypeScript para Supabase. Tipos gerados a partir │
+│                  │ do schema do banco. Usado em client.ts e server.ts.      │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ TanStack Query   │ Gerenciamento de server state (cache, deduping,          │
+│ v5 (React Query) │ background refetch, stale-while-revalidate). Provider    │
+│                  │ em Providers.tsx com staleTime 60s.                      │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ React Hook Form  │ Formulários performáticos (uncontrolled, minimal re-     │
+│ v7 + @hookform/  │ renders). Integração nativa com Zod via zodResolver.     │
+│ resolvers        │ Usado em CadastroForm e LoginForm.                       │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ Zod v4           │ Schema validation TypeScript-first. Schemas em           │
+│                  │ lib/schemas/ (cadastroSchema, loginSchema). Inferência   │
+│                  │ de tipos automática (z.infer).                           │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ Zustand v5       │ Estado global client-side simples (stores criados        │
+│                  │ on-demand). Alternativa leve ao Redux/Context.           │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ date-fns v4      │ Manipulação de datas imutável, tree-shakable, locale     │
+│                  │ PT-BR. Usado para formatação/validação de datas.         │
+├──────────────────┼──────────────────────────────────────────────────────────┤
+│ ESLint +         │ Linting (eslint.config.mjs flat config) + TypeScript    │
+│ TypeScript Check │ check (tsc --noEmit) no CI/build.                        │
+└──────────────────┴──────────────────────────────────────────────────────────┘
+
+
+PADRÕES ARQUITETURAIS ADOTADOS
+==============================
+
+1. **Server Components por padrão**
+   - Pages (page.tsx) são Server Components
+   - Data fetching direto no componente (async/await)
+   - Client Components apenas quando necessário ('use client')
+
+2. **Client Components isolados**
+   - Formulários (CadastroForm, LoginForm) = 'use client'
+   - Providers (TanStack Query) = 'use client'
+   - Hooks (useSupabase) = 'use client'
+
+3. **Supabase Client por ambiente**
+   - `lib/supabase/client.ts` → createBrowserClient (Client Components)
+   - `lib/supabase/server.ts` → createServerClient (Server Components, Middleware, Actions)
+   - `hooks/useSupabase.ts` → memoizado para evitar múltiplas instâncias
+
+4. **Middleware como Auth Guard**
+   - Executa em TODAS as rotas (matcher amplo)
+   - Verifica sessão via cookies (@supabase/ssr)
+   - Redireciona baseado em autenticação + role (profiles.role)
+
+5. **Validação em duas camadas**
+   - Client: Zod + React Hook Form (UX imediata)
+   - Server: Database constraints + RLS (segurança real)
+
+6. **Database-First Auth Flow**
+   - Trigger `handle_new_user` (security definer) em `auth.users`
+   - Cria `profiles` + `students` atomicamente
+   - `raw_user_meta_data` transporta dados do signUp para o trigger
+   - RLS policies garantem isolamento por usuário
+
+7. **Type Safety End-to-End**
+   - `lib/supabase/types.ts` espelha schema do banco
+   - Zod schemas inferem tipos TypeScript
+   - Supabase client tipado com generics (ex: `supabase.from<Student>('students')`)
+
+
+FLUXO DE AUTENTICAÇÃO
+=====================
+
+CADASTRO (Sign Up)
+------------------
+1. User preenche form → Zod valida
+2. `supabase.auth.signUp({ email, password, options: { data: {...} } })`
+3. Supabase Auth cria user em `auth.users`
+4. Trigger `handle_new_user` dispara (AFTER INSERT ON auth.users)
+   - INSERT em `profiles` (role='student', status='active')
+   - INSERT em `students` (dados de raw_user_meta_data)
+5. Se sucesso → redirect `/` + refresh
+
+LOGIN (Sign In)
+---------------
+1. User preenche form → Zod valida
+2. `supabase.auth.signInWithPassword({ email, password })`
+3. Supabase valida credenciais, cria sessão, seta cookies
+4. Middleware intercepta próxima request
+   - `supabase.auth.getSession()` lê cookies
+   - Busca `profiles.role` para decidir redirect
+5. Redirect: admin → `/admin`, student → `/`
+
+MIDDLEWARE PROTECTION
+---------------------
+- Rotas `/admin/*`: exige session + role='admin'
+- Rotas `/login`, `/cadastro`: se autenticado → redirect (admin→/admin, student→/)
+- Outras rotas: acesso livre (público) ou protegido por RLS no banco
+
+
+ESTRUTURA DO BANCO (PRINCIPAIS TABELAS)
+=======================================
+
+┌─────────────────┬─────────────────────────────────────────────────────────┐
+│ TABELA          │ DESCRIÇÃO                                               │
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ profiles        │ Usuários do sistema (auth.users estendido).             │
+│                 │ role: 'student' | 'admin', status: 'active' | 'inactive'│
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ students        │ Dados do aluno (nome, nascimento, telefone, faixa, etc) │
+│                 │ profile_id FK → profiles.id (1:1)                       │
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ trainings       │ Treinos/aulas (modalidade, dia, hora, local, capacidade)│
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ training_       │ Responsáveis por treinos (N:M profiles ↔ trainings)     │
+│ responsibles    │                                                         │
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ checkins        │ Presenças (student_id, training_id, data, status)       │
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ graduations     │ Histórico de graduações (faixa, grau, data, responsável)│
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ payments        │ Pagamentos (student_id, referência, valor, status)      │
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ publications    │ Comunicados/notícias/eventos/fotos/vídeos               │
+├─────────────────┼─────────────────────────────────────────────────────────┤
+│ notifications   │ Notificações in-app (target: all|student|admin|user_id) │
+└─────────────────┴─────────────────────────────────────────────────────────┘
+
+RLS (ROW LEVEL SECURITY) - PRINCÍPIOS
+=====================================
+
+1. **Todas as tabelas têm RLS habilitado**
+2. **Políticas por role:**
+   - `student`: vê/edita apenas próprios dados (profile_id = auth.uid())
+   - `admin`: acesso total (EXISTS profiles WHERE id=auth.uid() AND role='admin')
+3. **Triggers de auth** usam `security definer` para bypass RLS na criação
+4. **Nunca confie apenas no frontend** — RLS é a barreira real
+
+
+COMANDOS DE DESENVOLVIMENTO
+===========================
+
+npm run dev        # Inicia dev server com Turbopack (http://localhost:3000)
+npm run build      # Build produção (typecheck + lint + compile)
+npm run lint       # ESLint flat config
+npx tsc --noEmit   # Apenas typecheck (rápido)
+
+SUPABASE CLI (opcional)
+-----------------------
+npx supabase start        # Inicia stack local (Docker)
+npx supabase db reset     # Reset + aplica migrations
+npx supabase db diff      # Gera nova migration
+npx supabase gen types    # Atualiza lib/supabase/types.ts
+
+
+CONVENÇÕES DE CÓDIGO
+====================
+
+- **Português** em: UI strings, mensagens de erro, comentários de arquivo
+- **Inglês** em: nomes de variáveis, funções, tipos, componentes, hooks
+- **Componentes**: PascalCase (LoginForm.tsx)
+- **Hooks**: camelCase com prefixo use (useSupabase.ts)
+- **Utils/Schemas**: camelCase (loginSchema.ts)
+- **Tipos**: PascalCase + sufixo descritivo (Profile, Student, CheckInStatus)
+- **Enums/Constantes**: UPPER_SNAKE_CASE
+- **Sem comentários desnecessários** — código auto-explicativo
+
+
+PRÓXIMAS FASES (ROADMAP)
+========================
+
+Fase 1.3 — Recuperação de Senha
+Fase 1.4 — Perfil do Aluno (visualização/edição)
+Fase 2.1 — Dashboard do Aluno (treinos, check-ins, graduações)
+Fase 2.2 — Área Admin (gestão de alunos, treinos, pagamentos)
+Fase 3.x — Realtime (check-in ao vivo, notificações push)

@@ -1,0 +1,143 @@
+ESTRUTURA GERAL DO PROJETO
+==========================
+
+aplicativo-bushido/
+├── .next/                              # Build output do Next.js (gerado automaticamente)
+├── node_modules/                       # Dependências npm (gerado automaticamente)
+├── public/                             # Arquivos estáticos servidos diretamente
+├── src/                                # Código fonte principal da aplicação
+│   ├── app/                            # App Router (Next.js 13+)
+│   │   ├── cadastro/                   # Página de cadastro de aluno
+│   │   │   └── page.tsx                # Server Component - layout da página
+│   │   ├── login/                      # Página de login (NOVO - Fase 1.2)
+│   │   │   └── page.tsx                # Server Component - layout da página
+│   │   ├── favicon.ico                 # Favicon padrão
+│   │   ├── globals.css                 # Estilos globais + Tailwind
+│   │   ├── layout.tsx                  # Layout raiz com Providers e fontes Geist
+│   │   └── page.tsx                    # Home page (template padrão Next.js)
+│   ├── components/                     # Componentes React reutilizáveis
+│   │   ├── auth/                       # Componentes de autenticação
+│   │   │   ├── CadastroForm.tsx        # Formulário de cadastro (client component)
+│   │   │   └── LoginForm.tsx           # Formulário de login (client component) - NOVO
+│   │   └── Providers.tsx               # Providers globais (TanStack Query)
+│   ├── hooks/                          # Custom hooks
+│   │   └── useSupabase.ts              # Hook memoizado para cliente Supabase
+│   ├── lib/                            # Utilitários e configurações
+│   │   ├── schemas/                    # Schemas de validação Zod
+│   │   │   ├── cadastroSchema.ts       # Schema para cadastro de aluno
+│   │   │   └── loginSchema.ts          # Schema para login - NOVO
+│   │   └── supabase/                   # Configuração do Supabase
+│   │       ├── client.ts               # createBrowserClient (client-side)
+│   │       ├── server.ts               # createServerClient (server-side + cookies)
+│   │       └── types.ts                # Tipos TypeScript (Profile, Student, etc.)
+│   └── middleware.ts                   # Proteção de rotas + redirect por role
+├── supabase/                           # Migrations e configurações do Supabase
+│   └── migrations/                     # Migrations SQL (11 arquivos)
+│       ├── 20240101000001_create_profiles_table.sql
+│       ├── 20240101000002_create_students_table.sql
+│       ├── 20240101000003_create_trainings_table.sql
+│       ├── 20240101000004_create_training_responsibles_table.sql
+│       ├── 20240101000005_create_checkins_table.sql
+│       ├── 20240101000006_create_graduations_table.sql
+│       ├── 20240101000007_create_payments_table.sql
+│       ├── 20240101000008_create_publications_table.sql
+│       ├── 20240101000009_create_notifications_table.sql
+│       ├── 20240101000010_create_storage_buckets.sql
+│       └── 20240101000011_update_auth_trigger.sql  # Trigger auth.users → profiles + students
+├── explicacao-pastas-arquivos/         # Esta pasta - documentação do projeto
+│   └── 00-estrutura-geral.txt          # Este arquivo
+├── .env.local                          # Variáveis de ambiente locais (NÃO commitado)
+├── .gitignore                          # Arquivos ignorados pelo Git
+├── AGENTS.md                           # Instruções para agentes de IA
+├── CLAUDE.md                           # Configuração específica do Claude
+├── eslint.config.mjs                   # Configuração do ESLint
+├── lista-tarefas-app-bushido.txt       # Lista de tarefas original
+├── next.config.ts                      # Configuração do Next.js
+├── next-env.d.ts                       # Tipos TypeScript do Next.js
+├── package.json                        # Dependências e scripts do projeto
+├── package-lock.json                   # Lockfile das dependências
+├── postcss.config.mjs                  # Configuração do PostCSS
+├── prd.md                              # Product Requirements Document
+├── README.md                           # Documentação do projeto
+├── tasks.md                            # Tasks detalhadas por fase
+└── tsconfig.json                       # Configuração do TypeScript
+
+---
+
+RESUMO DAS FASES IMPLEMENTADAS
+==============================
+
+FASE 0 — Setup e Infraestrutura (COMPLETA)
+------------------------------------------
+- Next.js 16.2.12 (App Router, Turbopack) + TypeScript + Tailwind CSS v4
+- Supabase configurado (PostgreSQL, Auth, Storage, RLS)
+- Clientes Supabase: client.ts (browser) + server.ts (server + cookies)
+- Hook useSupabase para acesso client-side
+- Middleware de proteção de rotas:
+  - Redireciona não autenticados para /login em rotas /admin
+  - Redireciona autenticados para / ou /admin se tentarem acessar /login ou /cadastro
+  - Verifica role admin para rotas /admin
+- 11 migrations de banco criadas (profiles, students, trainings, training_responsibles, checkins, graduations, payments, publications, notifications, storage_buckets, auth_trigger)
+- TanStack Query configurado (staleTime 60s)
+- Zustand instalado para estado global
+- React Hook Form + Zod instalados
+- date-fns instalado
+
+FASE 1.1 — Cadastro de Aluno (COMPLETA)
+---------------------------------------
+Arquivos:
+- src/app/cadastro/page.tsx
+- src/components/auth/CadastroForm.tsx
+- src/lib/schemas/cadastroSchema.ts
+- supabase/migrations/20240101000011_update_auth_trigger.sql
+
+Funcionamento:
+1. Formulário: nome, email, senha, confirmação, data nascimento, telefone
+2. Validação client-side Zod (RHF + zodResolver):
+   - Nome: min 3 chars
+   - Email: formato válido
+   - Senha: min 6 chars, 1 maiúscula, 1 número
+   - Confirmação: deve ser igual à senha
+   - Data nascimento: anterior a hoje
+   - Telefone: 10-11 dígitos
+3. Submit → supabase.auth.signUp() com options.data { name, birth_date, phone }
+4. Trigger handle_new_user (security definer) cria:
+   - profiles (id, email, role='student', status='active')
+   - students (profile_id, name, birth_date, phone) via raw_user_meta_data
+5. Erros tratados: email duplicado, senha fraca, rede, genérico
+6. Loading: botão desabilitado + spinner SVG
+7. Sucesso: router.push('/') + router.refresh()
+
+Migration 11:
+- Substitui handle_new_user para criar profiles + students atomicamente
+- Lê raw_user_meta_data com operador ? e ->>
+- Recria trigger on_auth_user_created em auth.users
+- RLS students atualizado: políticas para aluno inserir/atualizar próprio registro + admin inserir/atualizar
+
+FASE 1.2 — Login (COMPLETA - Esta sessão)
+-----------------------------------------
+Arquivos NOVOS:
+- src/lib/schemas/loginSchema.ts
+- src/components/auth/LoginForm.tsx
+- src/app/login/page.tsx
+
+Funcionamento:
+1. Formulário: email + senha
+2. Validação Zod: email obrigatório + formato, senha obrigatória
+3. Submit → supabase.auth.signInWithPassword()
+4. Identifica role via middleware (perfil consultado no middleware)
+5. Redireciona: admin → /admin, student → /
+6. Erros: credenciais inválidas, conta inativa, rede, genérico
+7. Links: "Esqueci minha senha" (/recuperar-senha - futuro), "Cadastre-se" (/cadastro)
+8. Loading: botão desabilitado + spinner
+9. Middleware já protege /login: autenticados são redirecionados
+
+---
+
+COMANDOS ÚTEIS
+==============
+
+npm run dev        # Dev server (http://localhost:3000)
+npm run build      # Production build
+npm run lint       # ESLint
+npx tsc --noEmit   # TypeScript check
