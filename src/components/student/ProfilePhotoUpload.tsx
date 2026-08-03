@@ -40,6 +40,7 @@ export function ProfilePhotoUpload({ currentPhotoUrl, onFileSelected }: ProfileP
     <div className="flex flex-col items-center gap-2">
       <div className="relative w-24 h-24">
         {previewUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- preview é blob: (URL.createObjectURL), o next/image não otimiza blob URLs
           <img
             src={previewUrl}
             alt="Preview da foto do perfil"

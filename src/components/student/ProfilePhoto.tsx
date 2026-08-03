@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 interface ProfilePhotoProps {
   photoUrl?: string | null
   name: string
@@ -36,16 +38,19 @@ export function ProfilePhoto({ photoUrl, name, size = 96 }: ProfilePhotoProps) {
   const bgColor = getColorFromName(name)
 
   return (
-    <div className="relative flex-shrink-0" aria-hidden="true">
+    <div className="relative flex-shrink-0">
       {photoUrl ? (
-        <img
+        <Image
           src={photoUrl}
           alt={`${name} - Foto do perfil`}
-          className={`w-${size} h-${size} rounded-full object-cover border-2 border-zinc-200`}
+          width={size}
+          height={size}
+          className="rounded-full object-cover border-2 border-zinc-200"
         />
       ) : (
         <div
-          className={`w-${size} h-${size} rounded-full flex items-center justify-center text-white text-2xl font-bold ${bgColor} border-2 border-zinc-200`}
+          style={{ width: size, height: size }}
+          className={`rounded-full flex items-center justify-center text-white text-2xl font-bold ${bgColor} border-2 border-zinc-200`}
           role="img"
           aria-label={`${name} - Avatar`}
         >
