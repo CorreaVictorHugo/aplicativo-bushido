@@ -150,6 +150,7 @@ supabase/
     11_update_auth_trigger.sql
     12_fix_rls_recursion.sql
     13_seed_admin.sql
+    14_fix_checkin_insert_rls.sql
 ```
 
 ## Variáveis de ambiente
@@ -445,6 +446,7 @@ Arquivos criados:
 - `useWeekTrainings` retorna a semana (Seg–Dom) com treinos + check-ins do aluno
 - `useNextTraining` calcula a próxima ocorrência semanal (weekday+time) a partir de agora
 - **Mobile-first:** bottom nav com 7 abas sempre visíveis (flex-1 + truncate + safe-area), sem overflow
+- Migration 14: política RLS de insert de check-in tolera ±1 dia de `current_date` (fuso horário) — antes `class_date = current_date` (UTC) bloqueava o insert
 
 ### Fase 3 — Graduação e dashboard (completa)
 
