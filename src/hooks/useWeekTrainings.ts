@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
+import { localDateString } from '@/lib/dates'
 import type { Training, CheckIn } from '@/lib/supabase/types'
 
 export type WeekTraining = Training & { checkin: CheckIn | null }
@@ -30,7 +31,7 @@ export function getWeekDays(now = new Date()): { weekday: number; date: string; 
     const weekday = (1 + i) % 7
     return {
       weekday,
-      date: d.toISOString().split('T')[0],
+      date: localDateString(d),
       label: weekdayLabels[weekday],
       shortLabel: weekdayShort[weekday],
     }

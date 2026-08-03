@@ -71,8 +71,8 @@ export function CheckinList() {
       })}
 
       {doCheckin.isError && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
-          Erro ao fazer o check-in. Tente novamente.
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400" role="alert">
+          Erro ao fazer o check-in. {doCheckin.error instanceof Error ? doCheckin.error.message : ''}
         </div>
       )}
     </div>

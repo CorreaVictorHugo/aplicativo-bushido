@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
+import { localDateString } from '@/lib/dates'
 import type { Training, CheckIn } from '@/lib/supabase/types'
 
 export type TodayTraining = Training & { checkin: CheckIn | null }
@@ -30,7 +31,7 @@ async function fetchToday(): Promise<TodayData> {
 
   const today = new Date()
   const weekday = today.getDay()
-  const classDate = today.toISOString().split('T')[0]
+  const classDate = localDateString(today)
 
   const { data: trainings } = await supabase
     .from('trainings')
@@ -77,20 +78,22 @@ export function useTodayTrainings() {
         .insert({
           student_id: today.studentId,
           training_id: trainingId,
-          class_date: new Date().toISOString().split('T')[0],
+          class_date: localDateString(),
           status: 'pending',
         })
         .select()
         .single()
 
       if (error) {
-        console.error('Erro no check-in:', JSON.stringify({ message: error.message, code: error.code }))
+        console.error('Erro no check-in:', JSON.stringify({ message: error.message, code: error.code, details: error.details }))
         throw error
       }
       return data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['today-trainings'] })
+      queryClient.invalidateQueries({ queryKey: ['week-trainings'] })
+      queryClient.invalidateQueries({ queryKey: ['next-training'] })
     },
   })
 
