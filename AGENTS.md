@@ -72,8 +72,7 @@ src/
       GraduationView.tsx     # Graduação atual + tempo na faixa
       GraduationTimeline.tsx # Timeline do histórico de graduações
       WeekSchedule.tsx       # Agenda da semana (Seg–Dom) com check-in do aluno
-      CheckinList.tsx        # Treinos do dia + botão de check-in
-      FrequencyHistory.tsx   # Histórico de presenças do aluno
+      NextTrainingCard.tsx   # Próximo treino (home do aluno)
       FinanceView.tsx        # Situação + histórico de pagamentos
       MuralList.tsx          # Publicações publicadas
       YoutubeEmbed.tsx       # iframe do YouTube a partir do link
@@ -107,6 +106,7 @@ src/
     useAdminCheckins.ts      # Check-ins pendentes + histórico (admin)
     useTodayTrainings.ts     # Treinos do dia + check-in do aluno
     useWeekTrainings.ts      # Agenda da semana (Seg–Dom) + check-ins do aluno
+    useNextTraining.ts       # Próximo treino a partir de agora
     useStudentCheckins.ts    # Presenças confirmadas do aluno
     useAdminGraduations.ts   # Lista + registro de graduações (admin)
     useAdminDashboard.ts     # Indicadores por período (admin)
@@ -418,21 +418,23 @@ Arquivos criados:
 Arquivos criados:
 - `src/app/admin/treinos/page.tsx`, `novo/`, `[id]/editar/` — CRUD de treinos
 - `src/app/admin/checkins/page.tsx` — pendentes (confirmar/recusar) + histórico com métricas
-- `src/app/(student)/checkin/page.tsx` — treinos do dia + botão de check-in (status pending)
+- `src/app/(student)/checkin/page.tsx` — treinos de hoje (com botão) + agenda da semana (WeekSchedule)
 - `src/app/(student)/frequencia/page.tsx` — presenças confirmadas com filtro por mês
+- `src/app/(student)/page.tsx` — home com card "Próximo treino" (NextTrainingCard)
 - `src/components/admin/TrainingForm.tsx`, `TrainingList.tsx`, `PendingCheckinList.tsx`, `CheckinHistory.tsx`, `CheckinStatusBadge.tsx`
-- `src/components/student/CheckinList.tsx`, `FrequencyHistory.tsx`
-- `src/hooks/useAdminTrainings.ts`, `useAdminCheckins.ts`, `useTodayTrainings.ts`, `useStudentCheckins.ts`
+- `src/components/student/CheckinList.tsx`, `FrequencyHistory.tsx`, `WeekSchedule.tsx`, `NextTrainingCard.tsx`
+- `src/hooks/useAdminTrainings.ts`, `useAdminCheckins.ts`, `useTodayTrainings.ts`, `useStudentCheckins.ts`, `useWeekTrainings.ts`, `useNextTraining.ts`
 - `src/lib/schemas/trainingSchema.ts`
 
 #### Funcionamento
 
 1. Admin cria treino (modalidade, dia da semana, horário, local, capacidade, status)
-2. Aluno em `/checkin` vê os treinos ativos do dia e faz check-in (status `pending`)
-3. Check-in duplicado é impedido pela constraint `unique(student_id, training_id, class_date)`
-4. Aluno inativo não faz check-in (verificado no client + RLS)
-5. Admin em `/admin/checkins` confirma/recusa; grava `decided_by` + `decided_at` (auditoria, exigida pela RLS)
-6. Só check-ins confirmados aparecem em `/frequencia` (contagem + filtro por mês)
+2. Aluno em `/checkin` vê os treinos ativos do dia e faz check-in (status `pending`); abaixo, a agenda da semana (Seg–Dom) mostra todos os treinos + status
+3. Home do aluno mostra o **próximo treino** a partir de agora (com badge "Hoje" se for hoje)
+4. Check-in duplicado é impedido pela constraint `unique(student_id, training_id, class_date)`
+5. Aluno inativo não faz check-in (verificado no client + RLS)
+6. Admin em `/admin/checkins` confirma/recusa; grava `decided_by` + `decided_at` (auditoria, exigida pela RLS)
+7. Só check-ins confirmados aparecem em `/frequencia` (contagem + filtro por mês)
 
 #### Decisões de arquitetura
 
@@ -440,6 +442,9 @@ Arquivos criados:
 - Confirmação/recusa é irreversível no MVP (reverter fica para depois)
 - Métricas do histórico calculadas client-side sobre a query filtrada
 - `useTodayTrainings` retorna treinos + check-in do aluno no mesmo payload
+- `useWeekTrainings` retorna a semana (Seg–Dom) com treinos + check-ins do aluno
+- `useNextTraining` calcula a próxima ocorrência semanal (weekday+time) a partir de agora
+- **Mobile-first:** bottom nav com 7 abas sempre visíveis (flex-1 + truncate + safe-area), sem overflow
 
 ### Fase 3 — Graduação e dashboard (completa)
 

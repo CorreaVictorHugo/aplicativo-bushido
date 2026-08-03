@@ -153,6 +153,8 @@
 - [X] Na aba "Check-in", exibir treinos disponíveis no dia atual
 - [X] Exibir modalidade, horário, local
 - [X] Indicar se o aluno já fez check-in (com status)
+- [X] Agenda da semana (Seg–Dom) na aba Check-in (WeekSchedule)
+- [X] Home do aluno mostra o próximo treino a partir de agora (NextTrainingCard)
 
 ### 2.4 Funcionalidade — Check-in do aluno ✅
 - [X] Botão "Fazer check-in" no treino desejado
