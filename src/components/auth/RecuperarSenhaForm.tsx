@@ -81,7 +81,7 @@ export function RecuperarSenhaForm() {
     >
       {/* Campo E-mail */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium text-zinc-900">
+        <label htmlFor="email" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           E-mail
         </label>
         <input
@@ -89,10 +89,10 @@ export function RecuperarSenhaForm() {
           type="email"
           autoComplete="email"
           {...register('email')}
-          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
         />
         {errors.email && (
-          <p className="text-xs text-red-600" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {errors.email.message}
           </p>
         )}
@@ -103,8 +103,8 @@ export function RecuperarSenhaForm() {
         <div
           className={`rounded-lg px-4 py-3 text-sm ${
             submitMessage.type === 'success'
-              ? 'border border-green-200 bg-green-50 text-green-700'
-              : 'border border-red-200 bg-red-50 text-red-700'
+              ? 'border border-green-200 bg-green-50 text-green-700 dark:border-green-700 dark:bg-green-900/30 dark:text-green-400'
+              : 'border border-red-200 bg-red-50 text-red-700 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400'
           }`}
           role="alert"
         >
@@ -148,11 +148,11 @@ export function RecuperarSenhaForm() {
       </button>
 
       {/* Link de volta para login */}
-      <p className="text-sm text-zinc-500 text-center">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center">
         Lembrou a senha?{' '}
         <Link
           href="/login"
-          className="font-medium text-zinc-900 underline underline-offset-2 hover:text-zinc-700"
+          className="font-medium text-zinc-900 dark:text-zinc-100 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
         >
           Voltar para o login
         </Link>

@@ -126,7 +126,7 @@ export function CadastroForm() {
       className="flex w-full max-w-md flex-col gap-6"
     >
       <div className="flex flex-col gap-1">
-        <label htmlFor="name" className="text-sm font-medium text-zinc-900">
+        <label htmlFor="name" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           Nome completo
         </label>
         <input
@@ -134,17 +134,17 @@ export function CadastroForm() {
           type="text"
           autoComplete="name"
           {...register('name')}
-          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
         />
         {errors.name && (
-          <p className="text-xs text-red-600" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {errors.name.message}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium text-zinc-900">
+        <label htmlFor="email" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           E-mail
         </label>
         <input
@@ -152,10 +152,10 @@ export function CadastroForm() {
           type="email"
           autoComplete="email"
           {...register('email')}
-          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
         />
         {errors.email && (
-          <p className="text-xs text-red-600" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {errors.email.message}
           </p>
         )}
@@ -181,7 +181,7 @@ export function CadastroForm() {
       <div className="flex flex-col gap-1">
         <label
           htmlFor="birthDate"
-          className="text-sm font-medium text-zinc-900"
+          className="text-sm font-medium text-zinc-900 dark:text-zinc-100"
         >
           Data de nascimento
         </label>
@@ -189,17 +189,17 @@ export function CadastroForm() {
           id="birthDate"
           type="date"
           {...register('birthDate')}
-          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
         />
         {errors.birthDate && (
-          <p className="text-xs text-red-600" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {errors.birthDate.message}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="phone" className="text-sm font-medium text-zinc-900">
+        <label htmlFor="phone" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           Telefone
         </label>
         <input
@@ -208,10 +208,10 @@ export function CadastroForm() {
           autoComplete="tel"
           placeholder="(11) 99999-9999"
           {...register('phone')}
-          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
         />
         {errors.phone && (
-          <p className="text-xs text-red-600" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {errors.phone.message}
           </p>
         )}

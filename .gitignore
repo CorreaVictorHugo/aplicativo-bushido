@@ -73,3 +73,7 @@ Thumbs.db
 /.cursor/
 /.gemini/
 /.kimi/
+
+# Playwright (E2E)
+/playwright-report/
+/test-results/

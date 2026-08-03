@@ -510,7 +510,8 @@ npm run test:watch # Testes em modo watch
 
 - **Vitest + React Testing Library** configurados (`vitest.config.mts` + `src/test/setup.ts`)
 - 99 testes unitários/componentes: schemas Zod, util `belt.ts`/`timeInBelt`, `StatusBadge`, `CheckinStatusBadge`, `PaymentStatusBadge`, `PasswordField`, `ConfirmModal`, `YoutubeEmbed`, `GraduationTimeline`
-- Rodar com `npm test`; E2E (Playwright) fica para depois (exige ambiente com Supabase)
+- **Playwright E2E** configurado (`playwright.config.mjs` + `tests/e2e/`): smoke + cadastro passam; check-in/notificações exigem conta de aluno confirmada via env `E2E_STUDENT_EMAIL`/`E2E_STUDENT_PASSWORD` (admin padrão `admin@bushido.com`/`1234` ou `E2E_ADMIN_*`)
+- Rodar: `npm test` (unit), `npm run test:e2e` (E2E — inicia `npm run dev` automaticamente); `test:e2e:headed`/`test:e2e:ui` para debug
 
 ---
 

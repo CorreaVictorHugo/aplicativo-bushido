@@ -284,13 +284,18 @@
 ### 5.1 Testes — Configuração ✅
 - [X] Configurar Vitest (99 testes unitários/componentes passando)
 - [X] Configurar React Testing Library (jsdom + jest-dom + cleanup automático)
-- [ ] Configurar Playwright (E2E — pendente; exige ambiente com Supabase + credenciais)
-- [X] Comandos: `npm test` (vitest run) e `npm run test:watch`
+- [X] Configurar Playwright E2E (`playwright.config.mjs` + `tests/e2e/`; smoke + cadastro passam; check-in/notificações dependem de contas confirmadas)
+- [X] Comandos: `npm test` (vitest run), `npm run test:watch`, `npm run test:e2e`, `npm run test:e2e:headed`, `npm run test:e2e:ui`
 
 ### 5.1.1 Cobertura atual (unitários)
 - Schemas Zod: cadastro, login, perfil, aluno (admin), treino, graduação, pagamento, publicação, notificação
 - Util `belt.ts` (labels, cores, tempo na faixa, formatação de data)
 - Componentes: StatusBadge, CheckinStatusBadge, PaymentStatusBadge, PasswordField, ConfirmModal, YoutubeEmbed, GraduationTimeline
+
+### 5.1.2 Cobertura E2E (Playwright)
+- `tests/e2e/smoke.spec.ts` — login carrega (funciona sem config)
+- `tests/e2e/main.spec.ts` — cadastro (mostra confirmação de e-mail) + check-in (aluno→admin→frequência) + notificações
+- Fluxos de check-in/notificações exigem: `E2E_STUDENT_EMAIL` + `E2E_STUDENT_PASSWORD` (conta de aluno **confirmada** no Supabase) e `E2E_ADMIN_EMAIL`/`E2E_ADMIN_PASSWORD` (padrão do seed admin)
 
 ### 5.2 Testes — Fluxos críticos
 - [ ] Testar cadastro e login

@@ -113,7 +113,7 @@ export function LoginForm() {
     >
       {/* Campo E-mail */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm font-medium text-zinc-900">
+        <label htmlFor="email" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
           E-mail
         </label>
         <input
@@ -121,10 +121,10 @@ export function LoginForm() {
           type="email"
           autoComplete="email"
           {...register('email')}
-          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900"
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
         />
         {errors.email && (
-          <p className="text-xs text-red-600" role="alert">
+          <p className="text-xs text-red-600 dark:text-red-400" role="alert">
             {errors.email.message}
           </p>
         )}
@@ -187,10 +187,10 @@ export function LoginForm() {
       </button>
 
       {/* Links auxiliares */}
-      <div className="flex flex-col items-center gap-3 text-sm text-zinc-500">
+      <div className="flex flex-col items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
         <Link
           href="/recuperar-senha"
-          className="font-medium text-zinc-900 underline underline-offset-2 hover:text-zinc-700"
+          className="font-medium text-zinc-900 dark:text-zinc-100 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
         >
           Esqueci minha senha
         </Link>
@@ -198,7 +198,7 @@ export function LoginForm() {
           Não tem conta?{' '}
           <Link
             href="/cadastro"
-            className="font-medium text-zinc-900 underline underline-offset-2 hover:text-zinc-700"
+            className="font-medium text-zinc-900 dark:text-zinc-100 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
           >
             Cadastre-se
           </Link>
