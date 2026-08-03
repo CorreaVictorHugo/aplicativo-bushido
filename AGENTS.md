@@ -71,6 +71,7 @@ src/
       FrequencyHistory.tsx   # Histórico de presenças do aluno
       GraduationView.tsx     # Graduação atual + tempo na faixa
       GraduationTimeline.tsx # Timeline do histórico de graduações
+      WeekSchedule.tsx       # Agenda da semana (Seg–Dom) com check-in do aluno
       CheckinList.tsx        # Treinos do dia + botão de check-in
       FrequencyHistory.tsx   # Histórico de presenças do aluno
       FinanceView.tsx        # Situação + histórico de pagamentos
@@ -105,6 +106,7 @@ src/
     useAdminTrainings.ts     # CRUD de treinos (admin)
     useAdminCheckins.ts      # Check-ins pendentes + histórico (admin)
     useTodayTrainings.ts     # Treinos do dia + check-in do aluno
+    useWeekTrainings.ts      # Agenda da semana (Seg–Dom) + check-ins do aluno
     useStudentCheckins.ts    # Presenças confirmadas do aluno
     useAdminGraduations.ts   # Lista + registro de graduações (admin)
     useAdminDashboard.ts     # Indicadores por período (admin)

@@ -8,6 +8,7 @@ import { useSupabase } from '@/hooks/useSupabase'
 import { ProfilePhoto } from './ProfilePhoto'
 import { ProfileInfo } from './ProfileInfo'
 import { StatusBadge } from './StatusBadge'
+import { WeekSchedule } from './WeekSchedule'
 
 export function ProfileView() {
   const router = useRouter()
@@ -63,10 +64,10 @@ export function ProfileView() {
       {!isLoading && student && (
         <>
           <header className="flex flex-col items-center gap-4 mb-8">
-            <h1 className="text-2xl font-bold text-zinc-900">Meu Perfil</h1>
+            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Meu Perfil</h1>
             <ProfilePhoto photoUrl={student.photo_url} name={student.name} size={100} />
             <div className="flex flex-col items-center gap-1">
-              <p className="text-xl font-semibold text-zinc-900">{student.name}</p>
+              <p className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{student.name}</p>
               <StatusBadge status={student.status} />
             </div>
           </header>
@@ -74,6 +75,13 @@ export function ProfileView() {
           <section className="rounded-lg border border-zinc-200 bg-white mb-6" aria-labelledby="info-heading">
             <h2 id="info-heading" className="sr-only">Informações do perfil</h2>
             <ProfileInfo student={student} graduations={student.graduations || []} />
+          </section>
+
+          <section className="mb-6" aria-labelledby="agenda-heading">
+            <h2 id="agenda-heading" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+              Treinos da semana
+            </h2>
+            <WeekSchedule />
           </section>
 
           <Link

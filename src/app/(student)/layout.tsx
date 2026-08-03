@@ -97,18 +97,18 @@ export default function StudentLayout({
       </div>
       {children}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white px-2 py-1.5 dark:border-zinc-800 dark:bg-zinc-900"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white py-1 dark:border-zinc-800 dark:bg-zinc-900"
         role="navigation"
         aria-label="Navegação principal"
       >
-        <div className="flex max-w-md mx-auto justify-around">
+        <div className="mx-auto flex max-w-md items-stretch justify-center">
           {navigation.map((item) => {
             const isActive = pathname === item.href
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 px-3 py-2 text-sm transition-colors ${
+                className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 py-1.5 text-[10px] font-medium leading-tight transition-colors ${
                   isActive
                     ? 'text-zinc-900 dark:text-white'
                     : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
@@ -117,7 +117,7 @@ export default function StudentLayout({
                 aria-label={item.label}
               >
                 <item.icon active={isActive} />
-                <span>{item.label}</span>
+                <span className="w-full truncate text-center">{item.label}</span>
               </Link>
             )
           })}
