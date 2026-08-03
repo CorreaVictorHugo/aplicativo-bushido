@@ -1,17 +1,19 @@
 import { test, expect } from '@playwright/test'
 
-// Credenciais configuráveis via env (ou padrão do seed admin)
-const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || 'admin@bushido.com'
-const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || '1234'
+// Credenciais via env (obrigatórias — a conta admin fictícia foi removida)
+const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL
+const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD
 const STUDENT_EMAIL = process.env.E2E_STUDENT_EMAIL
 const STUDENT_PASSWORD = process.env.E2E_STUDENT_PASSWORD
 
+const hasAdminCreds = Boolean(ADMIN_EMAIL && ADMIN_PASSWORD)
 const hasStudentCreds = Boolean(STUDENT_EMAIL && STUDENT_PASSWORD)
+const hasAllCreds = hasAdminCreds && hasStudentCreds
 
 async function loginAdmin(page: import('@playwright/test').Page) {
   await page.goto('/login')
-  await page.fill('#email', ADMIN_EMAIL)
-  await page.fill('#password', ADMIN_PASSWORD)
+  await page.fill('#email', ADMIN_EMAIL!)
+  await page.fill('#password', ADMIN_PASSWORD!)
   await page.click('button:has-text("Entrar")')
   await page.waitForURL('/admin/**')
 }
@@ -48,7 +50,7 @@ test.describe('Cadastro', () => {
 })
 
 test.describe('Check-in (aluno + admin)', () => {
-  test.skip(!hasStudentCreds, 'Defina E2E_STUDENT_EMAIL e E2E_STUDENT_PASSWORD (conta de aluno confirmada)')
+  test.skip(!hasAllCreds, 'Defina E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD, E2E_STUDENT_EMAIL e E2E_STUDENT_PASSWORD (contas confirmadas)')
 
   test('aluno faz check-in e admin confirma', async ({ page, context }) => {
     // Admin cria treino para hoje
@@ -90,7 +92,7 @@ test.describe('Check-in (aluno + admin)', () => {
 })
 
 test.describe('Notificações', () => {
-  test.skip(!hasStudentCreds, 'Defina E2E_STUDENT_EMAIL e E2E_STUDENT_PASSWORD (conta de aluno confirmada)')
+  test.skip(!hasAllCreds, 'Defina E2E_ADMIN_EMAIL, E2E_ADMIN_PASSWORD, E2E_STUDENT_EMAIL e E2E_STUDENT_PASSWORD (contas confirmadas)')
 
   test('aluno recebe notificação quando check-in é confirmado', async ({ page, context }) => {
     // Admin cria treino
