@@ -151,6 +151,7 @@ supabase/
     12_fix_rls_recursion.sql
     13_seed_admin.sql
     14_fix_checkin_insert_rls.sql
+    15_protect_privileged_fields.sql
 ```
 
 ## Variáveis de ambiente
