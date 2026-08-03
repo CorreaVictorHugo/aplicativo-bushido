@@ -97,7 +97,7 @@ export default function StudentLayout({
       </div>
       {children}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white py-1 dark:border-zinc-800 dark:bg-zinc-900"
+        className="fixed bottom-0 left-0 right-0 z-50 overflow-hidden border-t border-zinc-200 bg-white pb-[env(safe-area-inset-bottom)] pt-1 dark:border-zinc-800 dark:bg-zinc-900"
         role="navigation"
         aria-label="Navegação principal"
       >

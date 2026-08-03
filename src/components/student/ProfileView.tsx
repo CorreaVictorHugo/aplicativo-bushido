@@ -8,7 +8,6 @@ import { useSupabase } from '@/hooks/useSupabase'
 import { ProfilePhoto } from './ProfilePhoto'
 import { ProfileInfo } from './ProfileInfo'
 import { StatusBadge } from './StatusBadge'
-import { WeekSchedule } from './WeekSchedule'
 
 export function ProfileView() {
   const router = useRouter()
@@ -75,13 +74,6 @@ export function ProfileView() {
           <section className="rounded-lg border border-zinc-200 bg-white mb-6" aria-labelledby="info-heading">
             <h2 id="info-heading" className="sr-only">Informações do perfil</h2>
             <ProfileInfo student={student} graduations={student.graduations || []} />
-          </section>
-
-          <section className="mb-6" aria-labelledby="agenda-heading">
-            <h2 id="agenda-heading" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
-              Treinos da semana
-            </h2>
-            <WeekSchedule />
           </section>
 
           <Link
